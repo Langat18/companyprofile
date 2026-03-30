@@ -2,460 +2,401 @@ import React, { useState } from 'react';
 import { styled } from 'goober';
 import { theme } from '../../styles/theme';
 
-const MainContent = styled('main')`
-  margin-top: 80px;
-`;
+const Page = styled('main')`margin-top: 80px;`;
 
 const PageHeader = styled('section')`
-  background: ${theme.colors.primary};
-  color: white;
-  padding: 4rem 0;
-  text-align: center;
+  width: 100%;
+  background: linear-gradient(135deg, ${theme.colors.primary} 0%, #0a1628 100%);
+  padding: 6rem 3rem 5rem;
+  box-sizing: border-box;
+  border-bottom: 3px solid ${theme.colors.accent};
 `;
 
-const Container = styled('div')`
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 2rem;
+const FullSection = styled('section')`
+  width: 100%;
+  padding: 6rem 3rem;
+  box-sizing: border-box;
+  background: ${p =>
+    p.$dark  ? `linear-gradient(135deg, ${theme.colors.primary} 0%, #0a1628 100%)` :
+    p.$black ? '#060e1c' :
+    p.$white ? '#ffffff' :
+    theme.colors.lightBg};
+`;
+
+const Wrap = styled('div')`width: 100%; max-width: 1300px; margin: 0 auto;`;
+
+const SectionEyebrow = styled('div')`
+  display: flex;
+  align-items: center;
+  gap: 0.875rem;
+  margin-bottom: 0.75rem;
+  justify-content: ${p => p.$center ? 'center' : 'flex-start'};
+`;
+
+const EyebrowBar = styled('div')`
+  width: 4px;
+  height: 1.3rem;
+  background: ${theme.colors.accent};
+  border-radius: 2px;
+  flex-shrink: 0;
+`;
+
+const EyebrowText = styled('p')`
+  color: ${theme.colors.accent};
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 4px;
+  text-transform: uppercase;
 `;
 
 const PageTitle = styled('h1')`
   font-family: ${theme.fonts.heading};
-  font-size: 3rem;
-  font-weight: 800;
+  font-size: clamp(2.5rem, 4vw, 3.5rem);
+  font-weight: 900;
+  color: #fff;
+  text-align: center;
   margin-bottom: 1rem;
-  
-  @media (max-width: ${theme.breakpoints.mobile}) {
-    font-size: 2rem;
-  }
+  span { color: ${theme.colors.accent}; }
 `;
 
-const Section = styled('section')`
-  padding: 5rem 0;
-`;
-
-const ContactGrid = styled('div')`
+const ContactSplit = styled('div')`
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr 1.35fr;
   gap: 4rem;
-  
-  @media (max-width: ${theme.breakpoints.tablet}) {
-    grid-template-columns: 1fr;
-    gap: 3rem;
-  }
+  align-items: start;
+  @media (max-width: ${theme.breakpoints.tablet}) { grid-template-columns: 1fr; gap: 3rem; }
 `;
 
-const ContactInfo = styled('div')`
+/* FIX: p was #fff on lightBg — changed to primary */
+const ContactLeft = styled('div')`
   h2 {
     font-family: ${theme.fonts.heading};
     color: ${theme.colors.primary};
-    font-size: 2rem;
-    margin-bottom: 2rem;
+    font-size: 1.9rem;
+    margin-bottom: 1rem;
+    font-weight: 800;
   }
-  
-  p {
-    color: ${theme.colors.lightText};
-    line-height: 1.7;
-    margin-bottom: 2rem;
-    font-size: 1.1rem;
-  }
+  p { color: ${theme.colors.primary}; line-height: 1.75; margin-bottom: 2rem; font-size: 1rem; }
 `;
 
+/* FIX: .ci-body p was #fff on white card background — changed to primary */
 const ContactItem = styled('div')`
   display: flex;
   align-items: flex-start;
-  gap: 1rem;
-  margin-bottom: 1.5rem;
-  padding: 1.5rem;
-  background: white;
-  border-radius: 12px;
-  box-shadow: ${theme.shadows.sm};
-  transition: all 0.3s ease;
-  
-  &:hover {
-    box-shadow: ${theme.shadows.md};
-    transform: translateX(5px);
-  }
-  
-  .icon {
-    width: 50px;
-    height: 50px;
-    background: linear-gradient(135deg, ${theme.colors.primary}, ${theme.colors.secondary});
+  gap: 1.25rem;
+  padding: 1.4rem;
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+  margin-bottom: 1rem;
+  border: 1px solid transparent;
+  transition: all 0.25s;
+  &:hover { border-color: ${theme.colors.accent}; transform: translateX(5px); box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
+  .ci-icon {
+    width: 50px; height: 50px;
+    background: ${theme.colors.primary};
     border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: white;
-    font-size: 1.2rem;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.25rem;
     flex-shrink: 0;
+    border: 2px solid ${theme.colors.accent};
   }
-  
-  .content {
-    flex: 1;
-    
-    h3 {
-      color: ${theme.colors.primary};
-      font-size: 1.1rem;
-      font-weight: 600;
-      margin-bottom: 0.5rem;
-    }
-    
-    p {
-      color: ${theme.colors.lightText};
-      margin: 0;
-      font-size: 1rem;
-    }
-    
-    a {
-      color: ${theme.colors.secondary};
-      text-decoration: none;
-      
-      &:hover {
-        text-decoration: underline;
-      }
-    }
+  .ci-body {
+    h3 { color: ${theme.colors.primary}; font-size: 0.95rem; font-weight: 700; margin-bottom: 0.25rem; }
+    p  { color: ${theme.colors.primary}; font-size: 0.92rem; margin: 0; line-height: 1.5; }
+    a  { color: ${theme.colors.secondary}; text-decoration: none; &:hover { color: ${theme.colors.accent}; } }
   }
 `;
 
-const ContactForm = styled('form')`
-  background: white;
-  padding: 2.5rem;
-  border-radius: 16px;
-  box-shadow: ${theme.shadows.lg};
-  
-  h2 {
+const HoursBox = styled('div')`
+  background: ${theme.colors.primary};
+  border-radius: 12px;
+  padding: 1.75rem 2rem;
+  margin-top: 1.75rem;
+  border: 1px solid rgba(255,255,255,0.06);
+  h3 {
+    color: ${theme.colors.accent};
     font-family: ${theme.fonts.heading};
-    color: ${theme.colors.primary};
-    font-size: 2rem;
-    margin-bottom: 1.5rem;
+    font-size: 1rem;
+    margin-bottom: 1.25rem;
     text-align: center;
   }
+  .hr-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    &:last-child { border-bottom: none; }
+    .hr-day  { color: #ffffff; font-size: 0.88rem; }
+    .hr-time { color: ${theme.colors.accent}; font-weight: 600; font-size: 0.88rem; }
+  }
+`;
+
+const FormBox = styled('div')`
+  background: ${theme.colors.primary};
+  border-radius: 16px;
+  padding: 3rem;
+  border-top: 3px solid ${theme.colors.accent};
+  h2 {
+    font-family: ${theme.fonts.heading};
+    color: #fff;
+    font-size: 1.65rem;
+    margin-bottom: 0.5rem;
+    text-align: center;
+  }
+  .form-sub { color: #ffffff; text-align: center; margin-bottom: 2rem; font-size: 0.92rem; }
+`;
+
+const FormRow = styled('div')`
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.25rem;
+  @media (max-width: ${theme.breakpoints.mobile}) { grid-template-columns: 1fr; }
 `;
 
 const FormGroup = styled('div')`
-  margin-bottom: 1.5rem;
-  
+  margin-bottom: 1.25rem;
   label {
     display: block;
-    color: ${theme.colors.text};
+    color: #c8d8ea;
     font-weight: 600;
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.4rem;
+    font-size: 0.88rem;
   }
-  
   input, textarea, select {
     width: 100%;
-    padding: 1rem;
-    border: 2px solid ${theme.colors.border};
+    padding: 0.875rem 1rem;
+    border: 1px solid rgba(255,255,255,0.1);
     border-radius: 8px;
-    font-size: 1rem;
-    transition: border-color 0.3s ease;
+    font-size: 0.95rem;
     font-family: inherit;
-    
-    &:focus {
-      outline: none;
-      border-color: ${theme.colors.primary};
-    }
-    
-    &::placeholder {
-      color: ${theme.colors.lightText};
-    }
+    background: rgba(255,255,255,0.05);
+    color: #fff;
+    transition: all 0.25s;
+    box-sizing: border-box;
+    &:focus { outline: none; border-color: ${theme.colors.accent}; background: rgba(255,255,255,0.08); box-shadow: 0 0 0 3px rgba(253,185,19,0.12); }
+    &::placeholder { color: rgba(255,255,255,0.5); }
+    option { background: ${theme.colors.primary}; color: #fff; }
   }
-  
-  textarea {
-    resize: vertical;
-    min-height: 120px;
-  }
+  textarea { resize: vertical; min-height: 130px; }
 `;
 
-const SubmitButton = styled('button')`
+const SubmitBtn = styled('button')`
   width: 100%;
   background: ${theme.colors.accent};
-  color: white;
+  color: ${theme.colors.primary};
   padding: 1rem 2rem;
   border: none;
   border-radius: 8px;
-  font-size: 1.1rem;
-  font-weight: 600;
+  font-size: 1rem;
+  font-weight: 700;
   cursor: pointer;
-  transition: all 0.3s ease;
-  
-  &:hover {
-    background: #d97706;
-    transform: translateY(-2px);
-    box-shadow: ${theme.shadows.lg};
-  }
-  
-  &:disabled {
-    background: ${theme.colors.lightText};
-    cursor: not-allowed;
-    transform: none;
-    box-shadow: none;
-  }
+  transition: all 0.25s;
+  margin-top: 0.5rem;
+  &:hover:not(:disabled) { background: ${theme.colors.accentHover}; transform: translateY(-2px); box-shadow: 0 6px 20px rgba(253,185,19,0.35); }
+  &:disabled { background: rgba(255,255,255,0.15); color: rgba(255,255,255,0.4); cursor: not-allowed; }
 `;
 
-const SuccessMessage = styled('div')`
-  background: ${theme.colors.success};
-  color: white;
-  padding: 1rem;
+const Alert = styled('div')`
+  padding: 0.875rem 1.25rem;
   border-radius: 8px;
   text-align: center;
-  margin-bottom: 1rem;
+  margin-bottom: 1.25rem;
+  font-weight: 600;
+  font-size: 0.95rem;
+  background: ${p => p.$error ? theme.colors.error : theme.colors.success};
+  color: #fff;
 `;
 
-const ErrorMessage = styled('div')`
-  background: ${theme.colors.error};
-  color: white;
-  padding: 1rem;
-  border-radius: 8px;
-  text-align: center;
-  margin-bottom: 1rem;
+const FAQGrid = styled('div')`
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem;
+  @media (max-width: ${theme.breakpoints.tablet}) { grid-template-columns: 1fr; }
 `;
 
-const BusinessHours = styled('div')`
-  background: ${theme.colors.lightBg};
+const FAQCard = styled('div')`
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(253,185,19,0.15);
+  border-radius: 10px;
   padding: 2rem;
-  border-radius: 12px;
-  margin-top: 2rem;
-  
-  h3 {
-    color: ${theme.colors.primary};
-    font-size: 1.3rem;
-    margin-bottom: 1rem;
-    text-align: center;
-  }
-  
-  .hours {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 0.5rem;
-    
-    .day {
-      color: ${theme.colors.text};
-      font-weight: 600;
-    }
-    
-    .time {
-      color: ${theme.colors.lightText};
-      text-align: right;
-    }
-  }
+  h4 { color: ${theme.colors.accent}; font-family: ${theme.fonts.heading}; margin-bottom: 0.75rem; font-size: 1rem; }
+  p  { color: #ffffff; line-height: 1.65; font-size: 0.93rem; }
 `;
 
+/* ─── Data ──────────────────────────────────────────────── */
+const contactItems = [
+  { icon: '📍', label: 'Office Location', value: 'Nexus Business Centre, Nairobi, Kenya' },
+  { icon: '📞', label: 'Phone Number',    value: <a href="tel:+254728247875">0728-247-875</a> },
+  { icon: '✉️', label: 'Email Address',   value: <a href="mailto:info@tripplemconsulting.com">info@tripplemconsulting.com</a> },
+  { icon: '🌐', label: 'Website',         value: <a href="https://www.tripplemconsulting.com" target="_blank" rel="noopener noreferrer">www.tripplemconsulting.com</a> },
+];
+
+const hours = [
+  { day: 'Monday – Friday', time: '8:00 AM – 6:00 PM' },
+  { day: 'Saturday',        time: '9:00 AM – 1:00 PM' },
+  { day: 'Sunday',          time: 'Closed' },
+];
+
+/* FIX: removed " — " connector hyphens in prose, reworded naturally */
+const faqs = [
+  { q: 'How quickly can you start?',             a: 'For most engagements we can mobilize within 1 to 2 weeks of contract signature. Urgent needs can often be accommodated sooner.' },
+  { q: 'Do you work outside Kenya?',             a: 'Yes. We have active clients and partners across East Africa, West Africa, and internationally. Remote delivery is fully supported.' },
+  { q: 'What is the typical engagement length?', a: 'Engagements range from a single workshop day to multi-year programs. We scope each project to match your needs and budget.' },
+  { q: 'Can you support grant proposals?',       a: 'Grant writing and proposal support is one of our core services. We have experience with major bilateral and multilateral donors.' },
+];
+
+/* ─── Component ─────────────────────────────────────────── */
 function ContactPage() {
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    phone: '',
-    company: '',
-    service: '',
-    message: ''
-  });
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitStatus, setSubmitStatus] = useState(null);
+  const empty = { name: '', email: '', phone: '', org: '', service: '', message: '' };
+  const [form, setForm]     = useState(empty);
+  const [busy, setBusy]     = useState(false);
+  const [status, setStatus] = useState(null);
 
-  const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    });
-  };
+  const handle = e => setForm({ ...form, [e.target.name]: e.target.value });
 
-  const handleSubmit = async (e) => {
+  const submit = async e => {
     e.preventDefault();
-    setIsSubmitting(true);
-    
-    // Simulate form submission
+    setBusy(true);
     try {
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      setSubmitStatus('success');
-      setFormData({
-        name: '',
-        email: '',
-        phone: '',
-        company: '',
-        service: '',
-        message: ''
-      });
-    } catch (error) {
-      setSubmitStatus('error');
+      await new Promise(r => setTimeout(r, 2000));
+      setStatus('success');
+      setForm(empty);
+    } catch {
+      setStatus('error');
     } finally {
-      setIsSubmitting(false);
-      setTimeout(() => setSubmitStatus(null), 5000);
+      setBusy(false);
+      setTimeout(() => setStatus(null), 5000);
     }
   };
 
   return (
-    <MainContent>
+    <Page>
+
+      {/* ─ Header ─ */}
       <PageHeader>
-        <Container>
-          <PageTitle>Contact Us</PageTitle>
-          <p style={{ fontSize: '1.25rem', opacity: '0.9' }}>
-            Ready to transform your HR operations? Let's discuss your needs.
+        <Wrap>
+          <SectionEyebrow $center>
+            <EyebrowBar />
+            <EyebrowText>Reach Out</EyebrowText>
+          </SectionEyebrow>
+          <PageTitle>Contact <span>Us</span></PageTitle>
+          <p style={{ color: '#ffffff', fontSize: '1.1rem', textAlign: 'center', maxWidth: 580, margin: '0 auto', lineHeight: 1.7 }}>
+            Ready to transform your organization? Let's start a conversation.
           </p>
-        </Container>
+        </Wrap>
       </PageHeader>
 
-      <Section>
-        <Container>
-          <ContactGrid>
-            <ContactInfo>
+      {/* ─ Contact split ─ */}
+      <FullSection>
+        <Wrap>
+          <ContactSplit>
+            <ContactLeft>
               <h2>Get In Touch</h2>
               <p>
-                Whether you need ongoing support, consultation services, or a temporary HR 
-                staffing solution, we're here to help. Contact us today for a free consultation 
-                to discuss how we can customize our services to your specific needs.
+                Whether you need a full consulting engagement, a focused workshop, support writing
+                a grant proposal, or advice on AI and data strategy, we are here to help.
               </p>
-
-              <ContactItem>
-                <div className="icon">📍</div>
-                <div className="content">
-                  <h3>Office Location</h3>
-                  <p>Nexus Business Centre<br />Nairobi, Kenya</p>
-                </div>
-              </ContactItem>
-
-              <ContactItem>
-                <div className="icon">📞</div>
-                <div className="content">
-                  <h3>Phone Number</h3>
-                  <p><a href="tel:+254728247875">0728-247-875</a></p>
-                </div>
-              </ContactItem>
-
-              <ContactItem>
-                <div className="icon">✉️</div>
-                <div className="content">
-                  <h3>Email Address</h3>
-                  <p><a href="mailto:info@megaflexihrsolutions.com">info@megaflexihrsolutions.com</a></p>
-                </div>
-              </ContactItem>
-
-              <ContactItem>
-                <div className="icon">🌐</div>
-                <div className="content">
-                  <h3>Website</h3>
-                  <p><a href="https://www.megaflexihrsolutions.com" target="_blank" rel="noopener noreferrer">www.megaflexihrsolutions.com</a></p>
-                </div>
-              </ContactItem>
-
-              <BusinessHours>
+              {contactItems.map((c, i) => (
+                <ContactItem key={i}>
+                  <div className="ci-icon">{c.icon}</div>
+                  <div className="ci-body"><h3>{c.label}</h3><p>{c.value}</p></div>
+                </ContactItem>
+              ))}
+              <HoursBox>
                 <h3>Business Hours</h3>
-                <div className="hours">
-                  <span className="day">Monday - Friday</span>
-                  <span className="time">8:00 AM - 5:00 PM</span>
-                  <span className="day">Saturday</span>
-                  <span className="time">9:00 AM - 1:00 PM</span>
-                  <span className="day">Sunday</span>
-                  <span className="time">Closed</span>
-                </div>
-              </BusinessHours>
-            </ContactInfo>
+                {hours.map((h, i) => (
+                  <div className="hr-row" key={i}>
+                    <span className="hr-day">{h.day}</span>
+                    <span className="hr-time">{h.time}</span>
+                  </div>
+                ))}
+              </HoursBox>
+            </ContactLeft>
 
-            <ContactForm onSubmit={handleSubmit}>
-              <h2>Send us a Message</h2>
-              
-              {submitStatus === 'success' && (
-                <SuccessMessage>
-                  Thank you for your message! We'll get back to you within 24 hours.
-                </SuccessMessage>
-              )}
-              
-              {submitStatus === 'error' && (
-                <ErrorMessage>
-                  Sorry, there was an error sending your message. Please try again.
-                </ErrorMessage>
-              )}
+            <FormBox>
+              <h2>Send Us a Message</h2>
+              <p className="form-sub">We respond to all enquiries within one business day.</p>
 
-              <FormGroup>
-                <label htmlFor="name">Full Name *</label>
-                <input
-                  type="text"
-                  id="name"
-                  name="name"
-                  value={formData.name}
-                  onChange={handleChange}
-                  placeholder="Your full name"
-                  required
-                />
-              </FormGroup>
+              {status === 'success' && <Alert>Message sent. We'll be in touch within 24 hours.</Alert>}
+              {status === 'error'   && <Alert $error>Something went wrong. Please try again.</Alert>}
 
-              <FormGroup>
-                <label htmlFor="email">Email Address *</label>
-                <input
-                  type="email"
-                  id="email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  placeholder="your.email@company.com"
-                  required
-                />
-              </FormGroup>
+              <form onSubmit={submit}>
+                <FormRow>
+                  <FormGroup>
+                    <label htmlFor="name">Full Name *</label>
+                    <input id="name" name="name" type="text" value={form.name} onChange={handle} placeholder="Your full name" required />
+                  </FormGroup>
+                  <FormGroup>
+                    <label htmlFor="email">Email Address *</label>
+                    <input id="email" name="email" type="email" value={form.email} onChange={handle} placeholder="you@organization.com" required />
+                  </FormGroup>
+                </FormRow>
+                <FormRow>
+                  <FormGroup>
+                    <label htmlFor="phone">Phone Number</label>
+                    <input id="phone" name="phone" type="tel" value={form.phone} onChange={handle} placeholder="0712-345-678" />
+                  </FormGroup>
+                  <FormGroup>
+                    <label htmlFor="org">Organization</label>
+                    <input id="org" name="org" type="text" value={form.org} onChange={handle} placeholder="Your organization name" />
+                  </FormGroup>
+                </FormRow>
 
-              <FormGroup>
-                <label htmlFor="phone">Phone Number</label>
-                <input
-                  type="tel"
-                  id="phone"
-                  name="phone"
-                  value={formData.phone}
-                  onChange={handleChange}
-                  placeholder="0712-345-678"
-                />
-              </FormGroup>
+                <FormGroup>
+                  <label htmlFor="service">Service of Interest</label>
+                  <select id="service" name="service" value={form.service} onChange={handle}>
+                    <option value="">Select a service</option>
+                    <option value="training">Professional Training & Executive Workshops</option>
+                    <option value="capacity">Capacity Building Programs</option>
+                    <option value="software">Software & Digital Solution Development</option>
+                    <option value="ai-data">AI & Data Governance Advisory</option>
+                    <option value="grants">Grant Writing & Proposal Support</option>
+                    <option value="research">Research & Innovation Consulting</option>
+                    <option value="other">Other / General Enquiry</option>
+                  </select>
+                </FormGroup>
 
-              <FormGroup>
-                <label htmlFor="company">Company/Organization</label>
-                <input
-                  type="text"
-                  id="company"
-                  name="company"
-                  value={formData.company}
-                  onChange={handleChange}
-                  placeholder="Your company name"
-                />
-              </FormGroup>
+                <FormGroup>
+                  <label htmlFor="message">Message *</label>
+                  <textarea
+                    id="message" name="message" value={form.message} onChange={handle}
+                    placeholder="Tell us about your organization and how we can help..."
+                    required
+                  />
+                </FormGroup>
 
-              <FormGroup>
-                <label htmlFor="service">Service of Interest</label>
-                <select
-                  id="service"
-                  name="service"
-                  value={formData.service}
-                  onChange={handleChange}
-                >
-                  <option value="">Select a service</option>
-                  <option value="hr-audit">HR Audit & Organization Design</option>
-                  <option value="strategic-planning">Strategic HR Planning</option>
-                  <option value="employee-relations">Employee Relations & CBA</option>
-                  <option value="talent-acquisition">Talent Acquisition</option>
-                  <option value="performance-management">Performance Management</option>
-                  <option value="culture-transformation">Culture Transformation</option>
-                  <option value="other">Other Services</option>
-                  <option value="consultation">General Consultation</option>
-                </select>
-              </FormGroup>
+                <SubmitBtn type="submit" disabled={busy}>
+                  {busy ? 'Sending…' : 'Send Message →'}
+                </SubmitBtn>
+              </form>
+            </FormBox>
+          </ContactSplit>
+        </Wrap>
+      </FullSection>
 
-              <FormGroup>
-                <label htmlFor="message">Message *</label>
-                <textarea
-                  id="message"
-                  name="message"
-                  value={formData.message}
-                  onChange={handleChange}
-                  placeholder="Tell us about your HR needs and how we can help..."
-                  required
-                />
-              </FormGroup>
+      {/* ─ FAQ ─ */}
+      <FullSection $black>
+        <Wrap>
+          <SectionEyebrow $center>
+            <EyebrowBar />
+            <EyebrowText>Common Questions</EyebrowText>
+          </SectionEyebrow>
+          <h2 style={{ fontFamily: theme.fonts.heading, color: '#fff', fontSize: 'clamp(1.8rem,2.5vw,2.3rem)', textAlign: 'center', marginBottom: '0.75rem', fontWeight: 800 }}>
+            Frequently Asked Questions
+          </h2>
+          <p style={{ color: '#ffffff', textAlign: 'center', maxWidth: 580, margin: '0 auto 3rem', lineHeight: 1.7, fontSize: '1rem' }}>
+            Quick answers to what new clients most commonly ask.
+          </p>
+          <FAQGrid>
+            {faqs.map((f, i) => (
+              <FAQCard key={i}><h4>{f.q}</h4><p>{f.a}</p></FAQCard>
+            ))}
+          </FAQGrid>
+        </Wrap>
+      </FullSection>
 
-              <SubmitButton type="submit" disabled={isSubmitting}>
-                {isSubmitting ? 'Sending...' : 'Send Message'}
-              </SubmitButton>
-            </ContactForm>
-          </ContactGrid>
-        </Container>
-      </Section>
-    </MainContent>
+    </Page>
   );
 }
 

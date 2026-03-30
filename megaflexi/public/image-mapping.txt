@@ -1,0 +1,17 @@
+# Image Mapping for Megaflexi HR Solutions Website
+# Submitted images to public folder mapping:
+
+dr.Faithtraining.avif → dr-faith-purpose.jpg (500×625px)
+    Purpose: Dr. Faith portrait in purpose section
+
+dr.Faithvenndiagram.avif → venn-diagram.avif (500×500px)  
+    Purpose: Strategy-Technology-People Venn diagram
+
+# Required additional images (placeholders or sourced separately):
+hero-data.jpg (800×600px) - Data analytics/technology visual
+consulting-img.jpg - Consulting help card image
+training-img.jpg - Training help card image  
+execution-img.jpg - Execution/technology help card image
+dr-faith-cta.jpg (220×260px) - Dr. Faith with dashboards
+team-collaboration.jpg (600×480px) - Team/office scene
+dr-faith-avatar.jpg (130×130px circular) - Avatar

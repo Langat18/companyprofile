@@ -4,52 +4,61 @@ import { styled } from 'goober';
 import { theme } from '../styles/theme';
 
 const HeaderContainer = styled('header')`
-  background: ${theme.colors.background};
-  box-shadow: ${theme.shadows.md};
+  background: #fff;
   position: fixed;
   width: 100%;
   top: 0;
   z-index: 1000;
-  transition: background-color 0.3s ease;
+  box-shadow: 0 1px 16px rgba(0,0,0,0.08);
 `;
 
 const Nav = styled('nav')`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 1rem 2rem;
-  max-width: 1200px;
+  padding: 0 3rem;
+  height: 80px;
+  width: 100%;
+  max-width: 1400px;
   margin: 0 auto;
+  box-sizing: border-box;
 `;
 
+/*
+  LOGO IMAGE: Replace the Logo component's inner content with your logo image.
+  Example:
+  <Logo to="/">
+    <img src="/logo.png" alt="TrippleMconsulting" style={{height:'44px'}} />
+  </Logo>
+  Recommended: PNG/SVG with transparent background, ~200×60px
+*/
 const Logo = styled(Link)`
   font-family: ${theme.fonts.heading};
   font-size: 1.5rem;
-  font-weight: 700;
+  font-weight: 800;
   color: ${theme.colors.primary};
   text-decoration: none;
-  
-  &:hover {
-    color: ${theme.colors.secondary};
-  }
+  letter-spacing: -0.5px;
+  white-space: nowrap;
+  span { color: ${theme.colors.secondary}; font-weight: 400; font-size: 0.9rem; display: block; line-height: 1; }
 `;
 
 const NavLinks = styled('div')`
   display: flex;
-  gap: 2rem;
+  gap: 0;
   align-items: center;
-  
   @media (max-width: ${theme.breakpoints.mobile}) {
-    display: ${props => props.isOpen ? 'flex' : 'none'};
+    display: ${p => p.$isOpen ? 'flex' : 'none'};
     position: absolute;
     top: 100%;
     left: 0;
     right: 0;
-    background: white;
+    background: #fff;
     flex-direction: column;
-    padding: 1rem 2rem;
-    box-shadow: ${theme.shadows.lg};
-    gap: 1rem;
+    padding: 1rem 2rem 1.5rem;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+    gap: 0;
+    align-items: flex-start;
   }
 `;
 
@@ -57,20 +66,42 @@ const NavLink = styled(Link)`
   text-decoration: none;
   color: ${theme.colors.text};
   font-weight: 500;
-  padding: 0.5rem 1rem;
-  border-radius: 8px;
-  transition: all 0.3s ease;
+  padding: 0.5rem 1.25rem;
+  font-size: 0.97rem;
   position: relative;
-  
-  &:hover {
-    color: ${theme.colors.primary};
-    background: ${theme.colors.lightBg};
+  transition: color 0.2s;
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: -4px;
+    left: 1.25rem;
+    right: 1.25rem;
+    height: 2px;
+    background: ${theme.colors.secondary};
+    transform: scaleX(0);
+    transition: transform 0.2s;
   }
-  
-  &.active {
-    color: ${theme.colors.primary};
-    background: ${theme.colors.lightBg};
-  }
+  &:hover        { color: ${theme.colors.secondary}; }
+  &:hover::after { transform: scaleX(1); }
+  &.active       { color: ${theme.colors.secondary}; }
+  &.active::after { transform: scaleX(1); }
+`;
+
+const AppointmentBtn = styled(Link)`
+  background: ${theme.colors.accent};
+  color: ${theme.colors.primary};
+  padding: 0.75rem 1.75rem;
+  border-radius: 6px;
+  font-weight: 700;
+  font-size: 0.97rem;
+  text-decoration: none;
+  transition: all 0.25s;
+  margin-left: 1.25rem;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  &:hover { background: ${theme.colors.accentHover}; transform: translateY(-2px); box-shadow: 0 6px 20px rgba(253,185,19,0.35); }
 `;
 
 const MobileToggle = styled('button')`
@@ -81,71 +112,36 @@ const MobileToggle = styled('button')`
   color: ${theme.colors.primary};
   cursor: pointer;
   padding: 0.5rem;
-  
-  @media (max-width: ${theme.breakpoints.mobile}) {
-    display: block;
-  }
-`;
-
-const ContactButton = styled(Link)`
-  background: ${theme.colors.accent};
-  color: white;
-  padding: 0.75rem 1.5rem;
-  border-radius: 8px;
-  font-weight: 600;
-  text-decoration: none;
-  transition: all 0.3s ease;
-  
-  &:hover {
-    background: #d97706;
-    transform: translateY(-2px);
-    box-shadow: ${theme.shadows.lg};
-  }
+  @media (max-width: ${theme.breakpoints.mobile}) { display: block; }
 `;
 
 function Header() {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
-
-  const toggleMenu = () => {
-    setIsOpen(!isOpen);
-  };
-
-  const closeMenu = () => {
-    setIsOpen(false);
-  };
-
-  useEffect(() => {
-    setIsOpen(false);
-  }, [location]);
-
-  const isActive = (path) => {
-    return location.pathname === path ? 'active' : '';
-  };
+  useEffect(() => { setIsOpen(false); }, [location]);
+  const active = path => location.pathname === path ? 'active' : '';
 
   return (
     <HeaderContainer>
       <Nav>
-        <Logo to="/" onClick={closeMenu}>
-          MegaFlexi HR
+        {/* Replace Logo content with <img> once brand assets are available */}
+        <Logo to="/">
+          TrippleM
+          <span>consulting</span>
         </Logo>
-        
-        <NavLinks isOpen={isOpen}>
-          <NavLink to="/" className={isActive('/')} onClick={closeMenu}>
-            Home
-          </NavLink>
-          <NavLink to="/about" className={isActive('/about')} onClick={closeMenu}>
-            About
-          </NavLink>
-          <NavLink to="/services" className={isActive('/services')} onClick={closeMenu}>
-            Services
-          </NavLink>
-          <ContactButton to="/contact" onClick={closeMenu}>
-            Contact Us
-          </ContactButton>
+
+        <NavLinks $isOpen={isOpen}>
+          <NavLink to="/"         className={active('/')}>Home</NavLink>
+          <NavLink to="/about"    className={active('/about')}>About</NavLink>
+          <NavLink to="/services" className={active('/services')}>Services</NavLink>
+          <NavLink to="/contact"  className={active('/contact')}>Contact</NavLink>
         </NavLinks>
-        
-        <MobileToggle onClick={toggleMenu} aria-label="Toggle menu">
+
+        <AppointmentBtn to="/contact">
+          Get Appointment ↗
+        </AppointmentBtn>
+
+        <MobileToggle onClick={() => setIsOpen(o => !o)} aria-label="Toggle menu">
           {isOpen ? '✕' : '☰'}
         </MobileToggle>
       </Nav>
